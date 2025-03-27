@@ -4,7 +4,6 @@
       class="el-menu-demo"
       mode="horizontal"
       :ellipsis="false"
-      @select="handleSelect"
       style="margin-bottom: 3%;"
     >
       <el-menu-item index="0">
@@ -16,18 +15,6 @@
       </el-menu-item>
       <el-menu-item index="1">Cotizador</el-menu-item>
       <el-menu-item index="2">Ordenes</el-menu-item>
-      <!-- <el-sub-menu index="2">
-        <template #title>Cotizaciones</template>
-        <el-menu-item index="2-1">item one</el-menu-item>
-        <el-menu-item index="2-2">item two</el-menu-item>
-        <el-menu-item index="2-3">item three</el-menu-item>
-        <el-sub-menu index="2-4">
-          <template #title>item four</template>
-          <el-menu-item index="2-4-1">item one</el-menu-item>
-          <el-menu-item index="2-4-2">item two</el-menu-item>
-          <el-menu-item index="2-4-3">item three</el-menu-item>
-        </el-sub-menu>
-      </el-sub-menu> -->
   </el-menu>
 
   <el-row style="margin-bottom: 2%;" :gutter="10">
@@ -40,11 +27,11 @@
           <el-row>
             <el-col>
               <h4>Tipo de orden</h4>
-              <el-checkbox-group v-model="form.tipoOrden">
-                <el-checkbox value="Fabricación" />
-                <el-checkbox value="Descargue Inv" />
-                <el-checkbox value="Servicio Post Venta" />
-              </el-checkbox-group>
+              <el-radio-group v-model="form.order_general_data.type_order">
+                <el-radio label="Fabricación" value="fabricacion" />
+                <el-radio label="Descargue inventario" value="descargue_inventario" />
+                <el-radio label="Servicio Post Venta" value="servicio_post_venta" />
+              </el-radio-group>
             </el-col>
           </el-row>
           
@@ -54,12 +41,12 @@
             <el-row :gutter="6">
               <el-col :span="12">
                 <el-form-item label="Cliente">
-                  <el-input v-model="form.cliente" />
+                  <el-input v-model="form.order_general_data.client" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Nit">
-                  <el-input v-model="form.nit" />
+                  <el-input v-model="form.order_general_data.nit" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -67,12 +54,12 @@
             <el-row style="padding-top: 1%" :gutter="6">
               <el-col :span="12">
                 <el-form-item label="Dirección de Entrega (confirmada)">
-                  <el-input v-model="form.direccion" />
+                  <el-input v-model="form.order_general_data.delivery_address" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Orden de compra">
-                  <el-input v-model="form.ordenCompra" />
+                  <el-input v-model="form.order_general_data.purchase_order" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -80,173 +67,360 @@
             <el-row style="padding-top: 1%" :gutter="6">
               <el-col :span="12">
                 <el-form-item label="Contacto comercial">
-                  <el-input v-model="form.contactoComercial" />
+                  <el-input v-model="form.order_general_data.business_contact" />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Telefono contacto">
-                  <el-input v-model="form.telefonoContacto" />
+                  <el-input v-model="form.order_general_data.phone_contact" />
                 </el-form-item>
               </el-col>
             </el-row>
+            
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit">Crear orden</el-button>
+              <el-button>Limpiar</el-button>
+            </el-form-item>
           </el-form>
         </div>
-        
       </el-card>
+
+      <el-row style="margin-top: 2%;" :gutter="10">
+        <el-card shadow="always" class="box-card">
+          <div slot="header" class="clearfix" style="margin-bottom: 2%;">
+            <span style="font-size: 1.5em;">Datos de la factura</span>
+          </div>
+          <el-col>
+            <!-- INFORMACION GENERAL DE FACTURACION -->
+            <el-form label-position="top">
+              <el-row :gutter="6">
+                <el-col :span="12">
+                  <el-form-item label="Factura No">
+                    <el-input v-model="form.invoice_general_data.invoice_number"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Remisión No">
+                    <el-input v-model="form.invoice_general_data.remission_number"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Fecha OT">
+                    <el-date-picker v-model="form.invoice_general_data.ot_date" type="date" style="width: 100%;"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Fecha de Entrega">
+                    <el-date-picker v-model="form.invoice_general_data.delivery_date" type="date" style="width: 100%;" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Fecha de Fabricación">
+                    <el-date-picker v-model="form.invoice_general_data.date_of_manufacture" type="date" style="width: 100%;" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Comercial a Cargo">
+                      <el-input v-model="form.invoice_general_data.commercial_in_charge" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-col>
+
+          <el-col>
+            <h4>Calculos de transporte</h4>
+            <el-row>
+              <el-col :span="12">
+                <el-checkbox v-model="form.invoice_general_data.transport_calculations.transport_invoice_with_iva" value="1">Facturar transporte con IVA</el-checkbox>
+              </el-col>
+              <el-col :span="12">
+                <el-checkbox v-model="form.invoice_general_data.transport_calculations.ot_without_transport_value" value="1">OT sin valor de transporte para cliente</el-checkbox>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-checkbox v-model="form.invoice_general_data.transport_calculations.transport_include_in_price" value="1">Transporte incluido en el precio</el-checkbox>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Valor">
+                    <el-input v-model="form.invoice_general_data.transport_calculations.transport_include_in_price_value" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            
+            <el-col :span="24">
+              <el-form-item label="Cotizacion o estimado a pagar por el transporte">
+                  <el-input v-model="form.invoice_general_data.transport_calculations.transport_total_value"/>
+              </el-form-item>
+            </el-col>
+          </el-col>
+
+          <el-col>
+            <!-- TOTALES DE LA FACTURACION -->
+            <h4>Totales</h4>
+            <el-form label-position="top">
+              <el-row :gutter="6">
+                <el-col :span="12">
+                  <el-form-item label="Unidades Fabricación">
+                    <el-input v-model="form.invoice_general_data.invoice_totals.manufacturing_units"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Unidades Descargue">
+                    <el-input v-model="form.invoice_general_data.invoice_totals.units_downloads"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Cotizacion">
+                    <el-input v-model="form.invoice_general_data.invoice_totals.quoter"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="Valor total en factura">
+                    <el-input v-model="form.invoice_general_data.invoice_totals.invoice_total_value" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+          </el-col>
+
+          <el-col>
+            <el-row>
+              <el-col :span="24">
+                <el-radio-group v-model="form.order_terms.subject_order">
+                  <el-radio label="post_venta">POST VENTA</el-radio>
+                  <el-radio label="garantia">GARANTIA</el-radio>
+                  <el-radio label="calidad">CALIDAD</el-radio>
+                </el-radio-group>
+              </el-col>
+            </el-row>
+          </el-col>
+
+          <el-col style="margin-top: 1%;">
+            <el-form label-position="top">
+              <el-form-item label="Describa que trabajo se va a realizar y porque razon">
+                <el-input type="textarea" v-model="form.order_terms.decription_for_service"></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+
+        </el-card>
+      </el-row>
     </el-col>
 
     <el-col :span="14">
-      <!-- FORMULARIO DE PRODUCTOS -->
-      <el-card shadow="always" class="box-card">
+      <!-- TABLA DE PRODUCTOS EN LA ORDEN -->
+      <el-card style="margin-bottom: 2%;" shadow="always" class="box-card">
         <div slot="header" class="clearfix">
           <span style="font-size: 1.5em;">Informacion de productos</span>
+        </div>
+        <el-table
+          :data="product_list"
+          style="width: 100%"
+          height="150">
+          <el-table-column
+            prop="standar_reference"
+            label="Referencia"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="type_reference"
+            label="Tipo de referencia"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="download_inventory"
+            label="Descargue de inventario"
+            width="200">
+          </el-table-column>
+          <el-table-column fixed="right" label="Operations" min-width="120">
+            <template #default="scope">
+              <el-button type="danger" size="small" @click.prevent="deleteRow(scope.$index)">
+                trash
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+      
+      <!-- FORMULARIO DE PRODUCTOS -->
+      <el-card shadow="always" class="box-card">
+        <div style="margin-bottom: 2%;" slot="header" class="clearfix">
+          <span style="font-size: 1.5em;">Agregar producto</span>
         </div>
           <el-form label-position="top">
             <el-row :gutter="6">
               <el-col :span="8">
                 <el-form-item label="Ref. Estandar">
-                  <el-autocomplete v-model="form.reference" :fetch-suggestions="searchProducts" placeholder="Buscar producto por la referencia" @select="handleSelect"/>
+                  <el-autocomplete v-model="form_product.standar_reference" :fetch-suggestions="searchProducts" placeholder="Buscar producto por la referencia" @select="handleSelect"/>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-                <el-form-item label="Cantidad">
-                  <el-input v-model="form.nit" />
+              <el-col :span="4">
+                <el-form-item label="Unit estandar">
+                  <el-input v-model="form_product.quantity_manufact" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Descargue de inventario">
-                  <el-input v-model="form.nit" />
+                  <el-select v-model="form_product.download_inventory" placeholder="Selecciona la forma de pago">
+                    <el-option
+                      v-for="item in download_inventory_types"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item label="Unit de descargue">
+                  <el-input v-model="form_product.quantity_download_inventory" />
                 </el-form-item>
               </el-col>
             </el-row>
+
+            <h4>Referencia a medida</h4>
+            <el-row :gutter="3">
+              <el-col :span="4">
+                <el-form-item label="Tipo">
+                  <el-select v-model="form_product.type_reference" placeholder="Selecciona la forma de pago">
+                    <el-option label="EPTL" value="EPTL"></el-option>
+                    <el-option label="EPTP" value="EPTP"></el-option>
+                    <el-option label="LP" value="LP"></el-option>
+                    <el-option label="PP" value="PP"></el-option>
+                    <el-option label="CP" value="CP"></el-option>
+                    <el-option label="POSTE" value="POSTE"></el-option>
+                    <el-option label="POSTE REDONDO" value="POSTE_REDONDO"></el-option>
+                    <el-option label="Cuña" value="cuña"></el-option>
+                    <el-option label="CARACOL" value="CARACOL"></el-option>
+                    <el-option label="ANGULO" value="CARACOL"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="Ancho">
+                  <el-input v-model="form_product.width" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="Largo">
+                  <el-input v-model="form_product.length" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="Alto">
+                  <el-input v-model="form_product.height" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="C1">
+                  <el-input v-model="form_product.c1" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="C2">
+                  <el-input v-model="form_product.c2" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="3">
+                <el-form-item label="C3">
+                  <el-input v-model="form_product.c3" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <h4>Como se debe fabricar</h4>
+            <!-- Primer slot de fabricacion -->
+            <el-row :gutter="3" v-for="(item, index) in form_product.product_items_manufact" :key="index">
+              <el-col :span="6">
+                <el-form-item :label="`Tipo de pieza ${index + 1}`">
+                  <el-select v-model="item.type_of_piece" placeholder="Selecciona la forma de pago">
+                    <el-option
+                      v-for="piece in pieces"
+                      :key="piece.value"
+                      :label="piece.label"
+                      :value="piece.value"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="2">
+                <el-form-item label="Cantidad">
+                  <el-input v-model="item.quantity_type_of_piece" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="4">
+                <el-form-item label="Tipo">
+                  <el-input v-model="item.type_caracterist_manu" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="4">
+                <el-form-item label="Largo">
+                  <el-input v-model="item.manu_length" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="3">
+                <el-form-item label="Peso UNIT">
+                  <el-input v-model="item.manu_weight" />
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="3">
+                <el-form-item label="Total UND">
+                  <el-input v-model="item.manu_total_und" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col>
+                <el-form-item label="Descripcion del producto, condiciones especiales de fabricacion">
+                  <el-input type="textarea" v-model="form_product.description"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            
+            <h4>Informacion para facturacion</h4>
+            <el-row :gutter="10">
+              <el-col :span="6">
+                <el-form-item label="Forma de pago">
+                  <el-select v-model="form_product.product_invoice_data.paid_method" placeholder="Selecciona la forma de pago">
+                    <el-option label="Credito" value="credito"></el-option>
+                    <el-option label="Plazo en dias" value="plazo_en_dias"></el-option>
+                    <el-option label="Contado" value="Contado"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Valor de venta unitario sin descuento">
+                  <el-input v-model="form_product.product_invoice_data.value_total_without_discount" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="Valor total a facturar por item">
+                  <el-input v-model="form_product.product_invoice_data.value_for_item" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="4">
+                <el-form-item label="Cantidad">
+                  <el-input v-model="form_product.product_invoice_data.quantity_total" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-form-item>
+              <el-button type="success" @click="addProductInList(form_product)">Agregar producto</el-button>
+              <el-button>Limpiar</el-button>
+            </el-form-item>
           </el-form>
       </el-card>
     </el-col>
 
-  </el-row>
-
-  <!-- INFORMACION DE FACTURACION -->
-  <el-row>
-    <el-col>
-      <el-card shadow="always" class="box-card">
-        <div slot="header" class="clearfix">
-          <span style="font-size: 1.5em;">Informacion de facturacion</span>
-        </div>
-
-        <div>
-          <el-row :gutter="12">
-            <el-col style="border-right-color: #efefef; border-right-style: solid" :span="6">
-              <!-- INFORMACION GENERAL DE FACTURACION -->
-              <h4>Datos de la factura</h4>
-              <el-form label-position="top">
-                <el-row :gutter="6">
-                  <el-col :span="12">
-                    <el-form-item label="Factura No">
-                      <el-input v-model="form.facturaNo"/>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Remisión No">
-                      <el-input v-model="form.remisionNo"/>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Fecha OT">
-                      <el-date-picker v-model="form.fechaQT" type="date" style="width: 100%;"/>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Fecha de Entrega">
-                      <el-date-picker v-model="form.fechaEntrega" type="date" style="width: 100%;" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Fecha de Fabricación">
-                      <el-date-picker v-model="form.fechaFabricacion" type="date" style="width: 100%;" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Comercial a Cargo">
-                        <el-input v-model="form.comercialACargo" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-
-            <el-col :span="12" style="border-right-color: #efefef; border-right-style: solid" >
-              <h4>Calculos de transporte</h4>
-              <el-row>
-                <el-col :span="12">
-                  <el-checkbox v-model="form.transport_in_invoice" value="1">Facturar transporte con IVA</el-checkbox>
-                </el-col>
-                <el-col :span="12">
-                  <el-checkbox v-model="form.transport_in_invoice" value="1">OT sin valor de transporte para cliente</el-checkbox>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="12">
-                  <el-checkbox v-model="form.transport_in_invoice" value="1">Incluir valor de transporte en factura</el-checkbox>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="Valor unitario a cobrar">
-                      <el-input v-model="form.cotizaciones" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="12">
-                  <el-checkbox v-model="form.transport_in_invoice" value="1">Transporte incluido en el precio</el-checkbox>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="Valor">
-                      <el-input v-model="form.cotizaciones" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              
-              <el-col :span="24">
-                <el-form-item label="Cotizacion o estimado a pagar por el transporte">
-                    <el-input v-model="form.cotizaciones" disabled/>
-                </el-form-item>
-              </el-col>
-            </el-col>
-            
-
-            <el-col :span="6">
-              <!-- TOTALES DE LA FACTURACION -->
-              <h4>Totales</h4>
-              <el-form label-position="top">
-                <el-row :gutter="6">
-                  <el-col :span="12">
-                    <el-form-item label="Unidades Fabricación">
-                      <el-input v-model="form.unidadesFabricacion" disabled />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Unidades Descargue">
-                      <el-input v-model="form.unidadesDescargue" disabled />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Cotizacion">
-                      <el-input v-model="form.cotizaciones"/>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="Valor total en factura">
-                      <el-input v-model="form.unidadesDescargue" />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </el-col>
-
-              
-          </el-row>
-        </div>
-      </el-card>
-    </el-col>
   </el-row>
 </template>
   
@@ -269,27 +443,176 @@ interface Enterprise{
 }
 
 const activeIndex = "1"
-
+const product_list = reactive(Array())
 const form = reactive({
-  cliente: '',
-  nit: '',
-  direccion: '',
-  ordenCompra: '',
-  contactoComercial: '',
-  telefonoContacto: '',
-  tipoOrden: [],
-  transport_in_invoice: false,
-  facturaNo: '',
-  remisionNo: '',
-  fechaQT: '',
-  fechaEntrega: '',
-  fechaFabricacion: '',
-  comercialACargo: '',
-  cotizaciones: '',
-  unidadesFabricacion: '',
-  unidadesDescargue: '',
-  ordenNo: '',
-  reference: ''
+  order_general_data: {
+    client: '', // cliente
+    nit: '',
+    delivery_address: '', // direccion de entrega
+    purchase_order: '', // orden de compra
+    business_contact: '', // contacto comercial
+    phone_contact: '', // telefono de contacto
+    type_order: '',
+  },
+  // datos de la factura
+  invoice_general_data: {
+    invoice_number: '', // numero de factura
+    remission_number: '', // numero de remision
+    ot_date: '', // fecha OT
+    delivery_date: '', // fecha de entrega
+    date_of_manufacture: '', // fecha de fabricacion
+    commercial_in_charge: '', // comercial a cargo
+
+    transport_calculations: {
+      transport_invoice_with_iva: false, // calcular transporte con IVA
+      ot_without_transport_value: false, // OT sin valor de transporte para cliente
+      transport_include_in_price: false, // transporte incluido en el precio
+      transport_include_in_price_value: 0, // valor del transporte incluido en el precio
+      transport_total_value: 0, // total o estimado a pagar por transporte
+    },
+    // totales de la factura
+    invoice_totals: {
+      manufacturing_units: '', // unidades fabricacion
+      units_downloads: '', // unidades descargue
+      quoter: '', // cotizacion
+      invoice_total_value: '', // valor total en factura
+    }
+  },
+  order_terms: {
+    subject_order: '', // similar al tipo de orden [GARANTIA, POST_VENTA, CALIDAD]
+    decription_for_service: '', // descripcion del trabajo a realizar
+  },
+})
+
+const pieces = [
+  {
+    value: 'listones_superiores',
+    label: 'Listones superiores'
+  },
+  {
+    value: 'durmientes',
+    label: 'Durmientes'
+  },
+  {
+    value: 'listones_inferiores',
+    label: 'Listones inferiores'
+  },
+  {
+    value: 'listones_adicionales',
+    label: 'Listones adicionales'
+  },
+  {
+    value: 'tornillos',
+    label: 'Tornillos'
+  },
+  {
+    value: 'otros',
+    label: 'Otros'
+  }
+]
+
+const download_inventory_types = [
+  {
+    value: 'CANASTILLA  60 x 40 x 13',
+    label: 'CANASTILLA  60 x 40 x 13'
+  },
+  {
+    value: 'CANASTILLA  60 x 40 x 18',
+    label: 'CANASTILLA  60 x 40 x 18'
+  },
+  {
+    value: 'CANASTILLA  60 x 40 x 25',
+    label: 'CANASTILLA  60 x 40 x 25'
+  },
+  {
+    value: 'CANASTILLA 60 x 40 x 40',
+    label: 'CANASTILLA 60 x 40 x 40'
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100 NG LS',
+    label: 'ESTIBA PLÁSTICA ER-100 NG LS'
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100 NG V1',
+    label: 'ESTIBA PLÁSTICA ER-100 NG V1'
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100S NG',
+    label: 'ESTIBA PLÁSTICA ER-100S NG'
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100HD AM ALF',
+    label: 'ESTIBA PLÁSTICA ER-100HD AM ALF'
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100HD NG ALF ',
+    label: 'ESTIBA PLÁSTICA ER-100HD NG ALF '
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100S 4E NG LS V1',
+    label: 'ESTIBA PLÁSTICA ER-100S 4E NG LS V1'
+  },
+  {
+    value: 'ESTIBA PLÁSTICA ER-100S 4E V1 TC ONE WAY',
+    label: 'ESTIBA PLÁSTICA ER-100S 4E V1 TC ONE WAY'
+  }
+]
+
+interface FormItem {
+  type_of_piece: string;
+  quantity_type_of_piece: string;
+  type_caracterist_manu: string;
+  manu_length: string;
+  manu_weight: string;
+  manu_total_und: string;
+}
+
+interface ProductData {
+  standar_reference: string,
+  type_reference: string,
+  quantity_manufact: string,
+  quantity_download_inventory: string,
+  width: string, // ancho
+  length: string, // largo
+  height: string, // alto
+  c1: string,
+  c2: string,
+  c3: string,
+  download_inventory: string, // descargue de inventario
+  description: string,
+  product_items_manufact: [],
+  product_invoice_data: {},
+}
+
+const form_product = reactive({
+  standar_reference: '',
+  type_reference: '',
+  quantity_manufact: 0,
+  quantity_download_inventory: 0,
+  width: '', // ancho
+  length: '', // largo
+  height: '', // alto
+  c1: '',
+  c2: '',
+  c3: '',
+  download_inventory: '', // descargue de inventario
+  description: '',
+
+  product_items_manufact: Array(5).fill(null).map((): FormItem => ({
+    type_of_piece: '', // tipo de pieza
+    quantity_type_of_piece: '', // cantidad de tipo de pieza
+    type_caracterist_manu: '',
+    manu_length: '', // largo
+    manu_weight: '', // peso
+    manu_total_und: '',
+  })),
+  
+  product_invoice_data: {
+    paid_method: '',
+    value_total_without_discount: 0,
+    quantity_total: 0,
+    value_for_item: 0,
+  }
 })
 
 const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>{
@@ -300,7 +623,7 @@ const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>
   try{
     const response = await axios.get(`http://127.0.0.1:8000/api/searchProduct?search=${query}`);
     const suggestions = response.data.map((item: any)=>({
-      value: item.reference,
+      value: item.name,
       id: item.id,
       name:item.name,
       description: item.description,
@@ -318,8 +641,54 @@ const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>
 }
 
 const handleSelect = (item: Enterprise) => {
-  form.reference = item.value;
+  form_product.standar_reference = item.value;
+  
+  // ASIGNACION DE VALORES POR EL TIPO DE REFERENCIA
+  var product_sintax = form_product.standar_reference.split(/[\s*]+/)
+  form_product.type_reference = product_sintax[0]
+  form_product.width = product_sintax[1]
+  form_product.length = product_sintax[2]
+  form_product.height = product_sintax[3]
+  form_product.c1 = product_sintax[4]
+  form_product.c2 = (product_sintax[5] !== undefined) ? product_sintax[5] : "";
+  form_product.c3 = (product_sintax[6] !== undefined) ? product_sintax.slice(6).join(' ') : "";
 }
+
+
+const onSubmit = async () => {
+  
+
+  try{
+    const response = await axios.post('http://127.0.0.1:8000/api/quoter',
+        {
+          client: form.order_general_data.client,
+          nit: form.order_general_data.nit,
+          type_order: form.order_general_data.type_order,
+          delivery_address: form.order_general_data.delivery_address,
+          purchase_order: form.order_general_data.purchase_order,
+          business_contact: form.order_general_data.business_contact,
+          phone_contact: form.order_general_data.phone_contact,
+          product_general_data: form_product,
+          invoice_general_data: form.invoice_general_data,
+          order_terms: form.order_terms,
+        }
+    );
+    console.log("cotizacion creada con exito", response)
+  }
+  catch(error){
+    console.error("Error crear cotizacion", error)
+  }
+}
+
+const addProductInList = (product_data: any) => {
+  product_list.push({ ...product_data })
+  console.log("como lo guarda?", product_list)
+}
+
+const deleteRow = (index: any) => {
+  product_list.splice(index, 1);
+}
+
 </script>
 
 <style scoped>
