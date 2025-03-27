@@ -567,22 +567,22 @@ interface FormItem {
   manu_total_und: string;
 }
 
-interface ProductData {
-  standar_reference: string,
-  type_reference: string,
-  quantity_manufact: string,
-  quantity_download_inventory: string,
-  width: string, // ancho
-  length: string, // largo
-  height: string, // alto
-  c1: string,
-  c2: string,
-  c3: string,
-  download_inventory: string, // descargue de inventario
-  description: string,
-  product_items_manufact: [],
-  product_invoice_data: {},
-}
+// interface ProductData {
+//   standar_reference: string,
+//   type_reference: string,
+//   quantity_manufact: string,
+//   quantity_download_inventory: string,
+//   width: string, // ancho
+//   length: string, // largo
+//   height: string, // alto
+//   c1: string,
+//   c2: string,
+//   c3: string,
+//   download_inventory: string, // descargue de inventario
+//   description: string,
+//   product_items_manufact: [],
+//   product_invoice_data: {},
+// }
 
 const form_product = reactive({
   standar_reference: '',
