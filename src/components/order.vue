@@ -671,9 +671,20 @@ const onSubmit = async () => {
           product_general_data: form_product,
           invoice_general_data: form.invoice_general_data,
           order_terms: form.order_terms,
+        },
+        {
+          responseType: 'blob' 
         }
     );
     console.log("cotizacion creada con exito", response)
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quoter.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
   catch(error){
     console.error("Error crear cotizacion", error)
