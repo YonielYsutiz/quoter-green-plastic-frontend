@@ -439,7 +439,8 @@ interface Enterprise{
   reference: string;
   intern_description: string;
   export: string;
-  warranty: string; 
+  warranty: string;
+  product_features_list: []
 }
 
 const activeIndex = "1"
@@ -584,6 +585,8 @@ interface FormItem {
 //   product_invoice_data: {},
 // }
 
+const product_items_forms = 1
+
 const form_product = reactive({
   standar_reference: '',
   type_reference: '',
@@ -598,7 +601,7 @@ const form_product = reactive({
   download_inventory: '', // descargue de inventario
   description: '',
 
-  product_items_manufact: Array(5).fill(null).map((): FormItem => ({
+  product_items_manufact: Array(product_items_forms).fill(null).map((): FormItem => ({
     type_of_piece: '', // tipo de pieza
     quantity_type_of_piece: '', // cantidad de tipo de pieza
     type_caracterist_manu: '',
@@ -631,6 +634,7 @@ const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>
       intern_description: item.intern_description,
       warranty: item.warranty,
       export: item.export,
+      product_features_list: item.product_features_list
     }));
     cb(suggestions)
   }
@@ -642,6 +646,9 @@ const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>
 
 const handleSelect = (item: Enterprise) => {
   form_product.standar_reference = item.value;
+
+  // CUANTAS PIEZAS TIENE
+  var product_items_pieces_count = item.product_features_list
   
   // ASIGNACION DE VALORES POR EL TIPO DE REFERENCIA
   var product_sintax = form_product.standar_reference.split(/[\s*]+/)
@@ -652,6 +659,18 @@ const handleSelect = (item: Enterprise) => {
   form_product.c1 = product_sintax[4]
   form_product.c2 = (product_sintax[5] !== undefined) ? product_sintax[5] : "";
   form_product.c3 = (product_sintax[6] !== undefined) ? product_sintax.slice(6).join(' ') : "";
+
+  form_product.product_items_manufact = Array(product_items_pieces_count.length)
+  .fill(null)
+  .map((_, index): FormItem => ({
+    type_of_piece: product_items_pieces_count[index]?.type_of_piece ?? '', // tipo de pieza
+    quantity_type_of_piece: product_items_pieces_count[index]?.quantity_type_of_piece ?? '', // cantidad de tipo de pieza
+    type_caracterist_manu: product_items_pieces_count[index]?.type_caracterist_manu ?? '',
+    manu_length: '', // largo
+    manu_weight: '', // peso
+    manu_total_und: ''
+  }));
+  
 }
 
 
@@ -668,7 +687,7 @@ const onSubmit = async () => {
           purchase_order: form.order_general_data.purchase_order,
           business_contact: form.order_general_data.business_contact,
           phone_contact: form.order_general_data.phone_contact,
-          product_general_data: form_product,
+          product_general_data: product_list,
           invoice_general_data: form.invoice_general_data,
           order_terms: form.order_terms,
         },
