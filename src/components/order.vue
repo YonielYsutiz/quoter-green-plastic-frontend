@@ -16,7 +16,15 @@
       <el-menu-item index="1">Cotizador</el-menu-item>
       <el-menu-item index="2">Ordenes</el-menu-item>
   </el-menu>
-
+  <el-alert
+      v-if="showAlert"
+      :title="alertMessage"
+      :type="alertType"
+      :closable="true"
+      show-icon
+      @close="showAlert = false"
+      style="margin-bottom: 20px"
+    />
   <el-row style="margin-bottom: 2%;" :gutter="10">
     <el-col :span="9">
       <el-card shadow="always" class="box-card">
@@ -427,7 +435,7 @@
 
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import axios from 'axios'
 
 interface Enterprise{
@@ -442,6 +450,10 @@ interface Enterprise{
   warranty: string;
   product_features_list: []
 }
+
+const showAlert = ref(false)
+const alertMessage = ref('')
+const alertType = ref('error')
 
 const activeIndex = "1"
 const product_list = reactive(Array())
@@ -624,7 +636,7 @@ const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>
     return;
   }
   try{
-    const response = await axios.get(`http://127.0.0.1:8000/api/searchProduct?search=${query}`);
+    const response = await axios.get(`https://greenplastic.co/quoter_backend/public/api/searchProduct?search=${query}`);
     const suggestions = response.data.map((item: any)=>({
       value: item.name,
       id: item.id,
@@ -663,8 +675,11 @@ const handleSelect = (item: Enterprise) => {
   form_product.product_items_manufact = Array(product_items_pieces_count.length)
   .fill(null)
   .map((_, index): FormItem => ({
+    // @ts-ignore - Solo para este caso
     type_of_piece: product_items_pieces_count[index]?.type_of_piece ?? '', // tipo de pieza
+    // @ts-ignore - Solo para este caso
     quantity_type_of_piece: product_items_pieces_count[index]?.quantity_type_of_piece ?? '', // cantidad de tipo de pieza
+    // @ts-ignore - Solo para este caso
     type_caracterist_manu: product_items_pieces_count[index]?.type_caracterist_manu ?? '',
     manu_length: '', // largo
     manu_weight: '', // peso
@@ -676,9 +691,33 @@ const handleSelect = (item: Enterprise) => {
 
 const onSubmit = async () => {
   
+  // VALIDAR QUE LOS ATRIBUTOS DEL DICCIONARIO general_order_data esten llenos
 
+  for (const clave in form.order_general_data) {
+    // @ts-ignore - Solo para este caso
+    if (form.order_general_data[clave] === null || form.order_general_data[clave] === undefined || form.order_general_data[clave] === "") {
+      alertMessage.value = `Los campos de información general son obligatorio`;
+      alertType.value = 'error';
+      showAlert.value = true;
+      return;
+    }
+  }
+
+  // if(form.order_general_data === undefined){
+  //   console.error("No se han llenado los datos generales de la orden")
+  //   return;
+  // } 
+  
+  // VALIDAR QUE AL MENOS SE ALLA AGREGADO UN PRODUCTO A LA ORDEN
+
+  if (product_list.length === 0){
+    alertMessage.value = 'Debe agregar al menos un producto';
+    alertType.value = 'error';
+    showAlert.value = true;
+    return;
+  }
   try{
-    const response = await axios.post('http://127.0.0.1:8000/api/quoter',
+    const response = await axios.post('https://greenplastic.co/quoter_backend/public/api/quoter',
         {
           client: form.order_general_data.client,
           nit: form.order_general_data.nit,
