@@ -84,23 +84,12 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            
-            <el-form-item>
-              <el-button type="primary" @click="onSubmit">Crear orden</el-button>
-              <el-button>Limpiar</el-button>
-            </el-form-item>
           </el-form>
         </div>
-      </el-card>
-
-      <el-row style="margin-top: 2%;" :gutter="10">
-        <el-card shadow="always" class="box-card">
-          <div slot="header" class="clearfix" style="margin-bottom: 2%;">
-            <span style="font-size: 1.5em;">Datos de la factura</span>
-          </div>
-          <el-col>
-            <!-- INFORMACION GENERAL DE FACTURACION -->
-            <el-form label-position="top">
+        <span style="font-size: 1.5em;">Datos de la factura</span>
+        <div>
+          <!-- INFORMACION GENERAL DE FACTURACION -->
+          <el-form label-position="top">
               <el-row :gutter="6">
                 <el-col :span="12">
                   <el-form-item label="Factura No">
@@ -133,10 +122,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-            </el-form>
-          </el-col>
-
-          <el-col>
+          </el-form>
             <h4>Calculos de transporte</h4>
             <el-row>
               <el-col :span="12">
@@ -162,9 +148,8 @@
                   <el-input v-model="form.invoice_general_data.transport_calculations.transport_total_value"/>
               </el-form-item>
             </el-col>
-          </el-col>
 
-          <el-col>
+            <el-col>
             <!-- TOTALES DE LA FACTURACION -->
             <h4>Totales</h4>
             <el-form label-position="top">
@@ -212,9 +197,12 @@
               </el-form-item>
             </el-form>
           </el-col>
-
-        </el-card>
-      </el-row>
+          <el-form-item>
+              <el-button type="primary" @click="onSubmit">Crear orden</el-button>
+              <el-button>Limpiar</el-button>
+            </el-form-item>
+        </div>
+      </el-card>
     </el-col>
 
     <el-col :span="14">
@@ -636,7 +624,7 @@ const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>
     return;
   }
   try{
-    const response = await axios.get(`https://greenplastic.co/quoter_backend/public/api/searchProduct?search=${query}`);
+    const response = await axios.get(`http://127.0.0.1:8000/api/searchProduct?search=${query}`);
     const suggestions = response.data.map((item: any)=>({
       value: item.name,
       id: item.id,
@@ -717,7 +705,7 @@ const onSubmit = async () => {
     return;
   }
   try{
-    const response = await axios.post('https://greenplastic.co/quoter_backend/public/api/quoter',
+    const response = await axios.post('http://127.0.0.1:8000/api/quoter',
         {
           client: form.order_general_data.client,
           nit: form.order_general_data.nit,
