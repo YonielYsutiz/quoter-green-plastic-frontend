@@ -14,7 +14,9 @@
         />
       </el-menu-item>
       <el-menu-item index="1">Cotizador</el-menu-item>
-      <el-menu-item index="2">Ordenes</el-menu-item>
+      <router-link to="/quoter/orderlist" custom v-slot="{ navigate }">
+      <el-menu-item index="2" @click="navigate">Ordenes</el-menu-item>
+    </router-link>
   </el-menu>
   <el-alert
       v-if="showAlert"
@@ -198,7 +200,7 @@
             </el-form>
           </el-col>
           <el-form-item>
-              <el-button type="primary" @click="onSubmit">Crear orden</el-button>
+              <el-button type="success" @click="onSubmit">Crear orden</el-button>
               <el-button>Limpiar</el-button>
             </el-form-item>
         </div>
