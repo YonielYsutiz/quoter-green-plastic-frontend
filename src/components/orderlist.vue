@@ -54,7 +54,9 @@
                       <el-button 
                         type="primary" 
                         size="small"
-                        style="width: 100%; padding: 8px 0; justify-content: center;">
+                        style="width: 100%; padding: 8px 0; justify-content: center;"
+                        @click="donwloanOtAdmon(row.id)"
+                        >
                         O.T. Admon
                       </el-button>
                     </div>
@@ -64,7 +66,9 @@
                       <el-button 
                         type="warning" 
                         size="small"
-                        style="width: 100%; padding: 8px 0; justify-content: center;">
+                        style="width: 100%; padding: 8px 0; justify-content: center;"
+                        @click="donwloanOtProduct(row.id)"
+                        >
                         O.T. Produccion
                       </el-button>
                     </div>
@@ -118,6 +122,39 @@ const downloadPdf = async (id: number) => {
   }
 };
 
+const donwloanOtAdmon = async(id:number) =>{
+  try{
+    const response = await axios.get(`http://127.0.0.1:8000/api/quoters/${id}/downloadOtAdmon`, {
+      responseType: 'blob',
+    });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `cotizacionOtAdmon_${id}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error al descargar el PDFOtAdmon:', error);
+  }
+}
+
+const donwloanOtProduct = async(id:number) =>{
+  try{
+    const response = await axios.get(`http://127.0.0.1:8000/api/quoters/${id}/downloadOtProduct`, {
+      responseType: 'blob',
+    });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `cotizacionOtProduct_${id}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error al descargar el PDFOtProduct:', error);
+  }
+}
 
 onMounted(() => {
   fetchOrdersList();
