@@ -28,14 +28,30 @@
           </template>
           <el-table :data="ordersList" border> 
             <el-table-column prop="client" label="Cliente" width="180"  align="center" />
-            <el-table-column prop="business_contact" label="Contacto de negocio" width="180" align="center"  />
-            <el-table-column prop="type_order" label="Tipo de orden" align="center" />
+            <el-table-column prop="business_contact" label="Contacto de negocio" width="120" align="center"  />
+            <el-table-column prop="type_order" label="Tipo de orden" align="center" width="150"/>
             <el-table-column label="Fecha de Creación" width="180" align="center" >
               <template #default="{ row }">
                 {{ formatDate(row.created_at) }}
               </template>
             </el-table-column>
-            <el-table-column label="Descargas" align="center" width="200">
+            <el-table-column prop="type_order" label="Cotizador" align="center" width="150">
+              <template #default="{ row }">
+              <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;" >
+                <div style="width: 140px;">
+                  <el-button
+                  type="primary" 
+                  style="width: 100%; padding: 8px 0; justify-content: center;"
+                  size="small"
+                  @click="openDialogWithId(row.id)"
+                >
+                Descargar Cotizador
+                </el-button>
+                </div>
+              </div>
+            </template>
+            </el-table-column>
+            <el-table-column label="Descargas" align="center" width="180">
               <template #default="{ row }">
                 <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
                   <!-- Botón Descargar PDF (existente) -->
@@ -81,15 +97,313 @@
     </el-row>
   </div>
 
+  <el-dialog v-model="dialogFormVisible" title="INFORMACION GENERAL DE FACTURACION" width="900">
+    <el-form label-position="top" :label-width="formLabelWidth">
+        <el-row :gutter="6">
+        <div slot="header" class="clearfix">
+          <span style="font-size: 1.5em;">Informacion de productos</span>
+        </div>
+        <el-table
+          :data="product_list"
+          style="width: 100%"
+          height="150">
+          <el-table-column
+            prop="standar_reference"
+            label="Referencia"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="type_reference"
+            label="Tipo de referencia"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            prop="download_inventory"
+            label="Descargue de inventario"
+            width="200">
+          </el-table-column>
+          <el-table-column
+            label="Precio"
+            width="120">
+            <template #default="scope">
+              {{ scope.row.fixed_price }} <!-- Ahora es estático -->
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="Operations" min-width="120">
+            <template #default="scope">
+              <el-button type="danger" size="small" @click.prevent="deleteRow(scope.$index)">
+                trash
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table >
+          <el-col :span="12">
+            <el-form-item label="Factura No">
+              <el-input v-model="form.invoice_general_data.invoice_number"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Remisión No">
+              <el-input v-model="form.invoice_general_data.remission_number"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Fecha OT">
+              <el-date-picker v-model="form.invoice_general_data.ot_date" type="date" style="width: 100%;"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Fecha de Entrega">
+              <el-date-picker v-model="form.invoice_general_data.delivery_date" type="date" style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Fecha de Fabricación">
+              <el-date-picker v-model="form.invoice_general_data.date_of_manufacture" type="date" style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Comercial a Cargo">
+                <el-input v-model="form.invoice_general_data.commercial_in_charge" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+    </el-form>
+    <div slot="header" class="clearfix">
+          <span style="font-size: 1.5em;">Calculos de transporte</span>
+      </div>
+    <el-row>
+        <el-col :span="12">
+          <el-checkbox v-model="form.invoice_general_data.transport_calculations.transport_invoice_with_iva" value="1">Facturar transporte con IVA</el-checkbox>
+        </el-col>
+        <el-col :span="12">
+          <el-checkbox v-model="form.invoice_general_data.transport_calculations.ot_without_transport_value" value="1">OT sin valor de transporte para cliente</el-checkbox>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-checkbox v-model="form.invoice_general_data.transport_calculations.transport_include_in_price" value="1">Transporte incluido en el precio</el-checkbox>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="Valor">
+              <el-input v-model="form.invoice_general_data.transport_calculations.transport_include_in_price_value" :value="formatCurrency(form.invoice_general_data.transport_calculations.transport_include_in_price_value)"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      
+      <el-col :span="24">
+        <el-form-item label="Cotizacion o estimado a pagar por el transporte">
+            <el-input v-model="form.invoice_general_data.transport_calculations.transport_total_value"/>
+        </el-form-item>
+      </el-col>
+
+      <el-col>
+        <div slot="header" class="clearfix">
+          <span style="font-size: 1.5em;">Totales de la facturacion</span>
+      </div>
+      <h3>Totales</h3>
+      <el-form label-position="top">
+        <el-row :gutter="6">
+          <el-col :span="12">
+            <el-form-item label="Unidades Fabricación">
+              <el-input v-model="form.invoice_general_data.invoice_totals.manufacturing_units"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Unidades Descargue">
+              <el-input v-model="form.invoice_general_data.invoice_totals.units_downloads"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Valor total en factura">
+              <el-input v-model="form.invoice_general_data.invoice_totals.invoice_total_value" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      </el-col>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button type="success" @click="submitInvoiceForm">
+          Confirm
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive, computed, watch} from 'vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { ElMessage } from 'element-plus';
 
+interface ProductInvoiceData {
+  paid_method: string
+  value_total_without_discount: string
+  quantity_total: string
+  value_for_item: string
+}
+
+interface ProductItemManufact {
+  type_of_piece: string
+  quantity_type_of_piece: string
+  type_caracterist_manu: string
+  manu_length: string | null
+  manu_weight: string | null
+  manu_total_und: string | null
+}
+
+interface ProductGeneralData {
+  standar_reference: string
+  type_reference: string
+  quantity_manufact: number
+  quantity_download_inventory: number
+  width: string
+  length: string
+  height: string
+  c1: string
+  c2: string | null
+  c3: string | null
+  download_inventory: string
+  description: string
+  product_items_manufact: ProductItemManufact[]
+  product_invoice_data: ProductInvoiceData
+}
+
+const dialogFormVisible = ref(false);
+const formLabelWidth = '180px';
+const form = ref({
+  invoice_general_data: {
+    invoice_number: '',
+    remission_number: '',
+    ot_date: '',
+    delivery_date: '',
+    date_of_manufacture: '',
+    commercial_in_charge: '',
+    transport_calculations: {
+      transport_invoice_with_iva: false,
+      ot_without_transport_value: false,
+      transport_include_in_price: false,
+      transport_include_in_price_value: 0,
+      transport_total_value: 0
+    },
+    invoice_totals: {
+      manufacturing_units: '',
+      units_downloads: '',
+      quoter: '',
+      invoice_total_value: ''
+    }
+  }
+})
+
+const product_list = ref<ProductGeneralData[]>([])
 const ordersList = ref([]);
 const activeIndex = ref('2');
+
+const resetForm = () => {
+  form.value = {
+    invoice_general_data: {
+      invoice_number: '',
+      remission_number: '',
+      ot_date: '',
+      delivery_date: '',
+      date_of_manufacture: '',
+      commercial_in_charge: '',
+      transport_calculations: {
+        transport_invoice_with_iva: false,
+        ot_without_transport_value: false,
+        transport_include_in_price: false,
+        transport_include_in_price_value: 0,
+        transport_total_value: 0
+      },
+      invoice_totals: {
+        manufacturing_units: '',
+        units_downloads: '',
+        quoter: '',
+        invoice_total_value: ''
+      }
+    }
+  }
+}
+
+const form_product = reactive({
+  standar_reference: '',
+  type_reference: '',
+  quantity_manufact: 0,
+  quantity_download_inventory: 0,
+  width: '', // ancho
+  length: '', // largo
+  height: '', // alto
+  c1: '',
+  c2: '',
+  c3: '',
+  download_inventory: '', // descargue de inventario
+  description: '',
+  
+  product_invoice_data: {
+    paid_method: '',
+    value_total_without_discount: 0,
+    quantity_total: 0,
+    value_for_item: 0,
+  }
+})
+
+const currentQuoterId = ref<number | null>(null);
+const openDialogWithId = (id: number) => {
+  currentQuoterId.value = id; // Guarda el ID
+  fetchProductData(id)
+}
+
+const fetchProductData = async (id: number) => {
+  try {
+    const res = await axios.get(`http://127.0.0.1:8000/api/quoters/${id}`)
+    product_list.value = res.data.product_general_data
+    dialogFormVisible.value = true // mostrar modal después de cargar
+  } catch (error) {
+    console.error('Error al cargar datos:', error)
+  }
+}
+
+const submitInvoiceForm = async () => {
+  if (!currentQuoterId.value) {
+    ElMessage.error('No se encontró el ID de la cotización');
+    return;
+  }
+
+  try {
+    const payload = {
+      invoice_general_data: form.value.invoice_general_data,
+      product_general_data: product_list.value
+    };
+
+    const response = await axios.put(
+      `http://127.0.0.1:8000/api/quoters/update/${currentQuoterId.value}`, 
+      payload, 
+      { responseType: 'blob' }
+    );
+
+    // Crear el blob y descargar
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `cotizacionOrProduct_${currentQuoterId.value}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Limpiar y mostrar mensaje
+    dialogFormVisible.value = false;
+    resetForm();
+    ElMessage.success('Cotización actualizada y PDF descargado');
+
+  } catch (error) {
+    console.error('Error:', error);
+    ElMessage.error('Error al procesar la cotización');
+  }
+}
 
 const fetchOrdersList = async () => {
   try {
@@ -155,6 +469,39 @@ const donwloanOtProduct = async(id:number) =>{
     console.error('Error al descargar el PDFOtProduct:', error);
   }
 }
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP'
+  }).format(value || 0)
+}
+
+
+const formatCurrencyToNumber = (value: string): number => {
+  return parseFloat(
+    value.replace(/\$\s*/g, '')
+      .replace(/\./g, '')
+      .replace(/,/g, '.')
+  ) || 0;
+};
+
+const totalProductPrice = computed(() => {
+  return product_list.value.reduce((total, product) => {
+    return total + formatCurrencyToNumber(product.fixed_price || '');
+  }, 0);
+});
+
+watch(totalProductPrice, (newTotal) => {
+  form.value.invoice_general_data.transport_calculations.transport_include_in_price_value = newTotal;
+});
+
+const deleteRow = (index: number) => {
+  product_list.value.splice(index, 1);
+  // No necesitas recalcular manualmente porque la propiedad computada lo hará automáticamente
+};
+
+
 
 onMounted(() => {
   fetchOrdersList();

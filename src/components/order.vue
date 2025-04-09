@@ -62,11 +62,21 @@
             </el-row>
 
             <el-row style="padding-top: 1%" :gutter="6">
-              <el-col :span="12">
+              <el-col>
                 <el-form-item label="Dirección de Entrega (confirmada)">
                   <el-input v-model="form.order_general_data.delivery_address" />
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            
+            <el-row :gutter="6">
+              <el-col :span="12">
+                <el-form-item label="Cotizacion">
+                  <el-input v-model="form.order_general_data.quoter"/>
+                </el-form-item>
+              </el-col>
+
               <el-col :span="12">
                 <el-form-item label="Orden de compra">
                   <el-input v-model="form.order_general_data.purchase_order" />
@@ -88,9 +98,9 @@
             </el-row>
           </el-form>
         </div>
-        <span style="font-size: 1.5em;">Datos de la factura</span>
+        <!-- <span style="font-size: 1.5em;">Datos de la factura</span> -->
         <div>
-          <!-- INFORMACION GENERAL DE FACTURACION -->
+          <!-- INFORMACION GENERAL DE FACTURACION
           <el-form label-position="top">
               <el-row :gutter="6">
                 <el-col :span="12">
@@ -149,11 +159,11 @@
               <el-form-item label="Cotizacion o estimado a pagar por el transporte">
                   <el-input v-model="form.invoice_general_data.transport_calculations.transport_total_value"/>
               </el-form-item>
-            </el-col>
+            </el-col> -->
 
-            <el-col>
+            <!-- <el-col> -->
             <!-- TOTALES DE LA FACTURACION -->
-            <h4>Totales</h4>
+            <!-- <h4>Totales</h4>
             <el-form label-position="top">
               <el-row :gutter="6">
                 <el-col :span="12">
@@ -178,8 +188,7 @@
                 </el-col>
               </el-row>
             </el-form>
-          </el-col>
-
+          </el-col> -->
           <el-col>
             <el-row>
               <el-col :span="24">
@@ -231,6 +240,13 @@
             prop="download_inventory"
             label="Descargue de inventario"
             width="200">
+          </el-table-column>
+          <el-table-column
+            label="Precio"
+            width="130">
+            <template #default="scope">
+              {{ scope.row.fixed_price }} <!-- Ahora es estático -->
+            </template>
           </el-table-column>
           <el-table-column fixed="right" label="Operations" min-width="120">
             <template #default="scope">
@@ -394,19 +410,19 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-                <el-form-item label="Valor de venta unitario sin descuento">
-                  <el-input v-model="form_product.product_invoice_data.value_total_without_discount" />
+              <el-col :span="4">
+                <el-form-item label="Cantidad">
+                  <el-input v-model="form_product.product_invoice_data.quantity_total" />
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="Valor total a facturar por item">
-                  <el-input v-model="form_product.product_invoice_data.value_for_item" />
+                  <el-input v-model="form_product.product_invoice_data.value_for_item" :value="formatCurrency(form_product.product_invoice_data.value_for_item)" />
                 </el-form-item>
               </el-col>
-              <el-col :span="4">
-                <el-form-item label="Cantidad">
-                  <el-input v-model="form_product.product_invoice_data.quantity_total" />
+              <el-col :span="8">
+                <el-form-item label="Valor de venta unitario sin descuento">
+                  <el-input v-model="form_product.product_invoice_data.value_total_without_discount" :value="formatCurrency(form_product.product_invoice_data.value_total_without_discount)"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -425,7 +441,7 @@
 
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import axios from 'axios'
 
 interface Enterprise{
@@ -450,12 +466,13 @@ const product_list = reactive(Array())
 const form = reactive({
   order_general_data: {
     client: '', // cliente
-    nit: '',
+    nit: '', // nit
     delivery_address: '', // direccion de entrega
     purchase_order: '', // orden de compra
     business_contact: '', // contacto comercial
     phone_contact: '', // telefono de contacto
     type_order: '',
+    quoter:'', // cotizacion
   },
   // datos de la factura
   invoice_general_data: {
@@ -476,8 +493,7 @@ const form = reactive({
     // totales de la factura
     invoice_totals: {
       manufacturing_units: '', // unidades fabricacion
-      units_downloads: '', // unidades descargue
-      quoter: '', // cotizacion
+      units_downloads: '', // unidades descargue // cotizacion
       invoice_total_value: '', // valor total en factura
     }
   },
@@ -619,6 +635,25 @@ const form_product = reactive({
     value_for_item: 0,
   }
 })
+watch(
+  () => [
+    form_product.product_invoice_data.quantity_total,
+    form_product.product_invoice_data.value_for_item
+  ],
+  ([newQuantity, newValue]) => {
+    const quantity = Number(newQuantity) || 0
+    const value = Number(newValue) || 0
+    form_product.product_invoice_data.value_total_without_discount = quantity * value
+  },
+  { immediate: true }
+)
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP'
+  }).format(value || 0)
+}
 
 const searchProducts = async (query: string, cb:(data: Enterprise[]) => void) =>{
   if (!query){
@@ -711,6 +746,7 @@ const onSubmit = async () => {
         {
           client: form.order_general_data.client,
           nit: form.order_general_data.nit,
+          quoter: form.order_general_data.quoter,
           type_order: form.order_general_data.type_order,
           delivery_address: form.order_general_data.delivery_address,
           purchase_order: form.order_general_data.purchase_order,
@@ -740,9 +776,13 @@ const onSubmit = async () => {
 }
 
 const addProductInList = (product_data: any) => {
-  product_list.push({ ...product_data })
-  console.log("como lo guarda?", product_list)
-}
+  const productCopy = { 
+    ...product_data,
+    fixed_price: formatCurrency(product_data.product_invoice_data.value_total_without_discount)
+  };
+  product_list.push(productCopy);
+  console.log("Producto guardado:", productCopy);
+};
 
 const deleteRow = (index: any) => {
   product_list.splice(index, 1);
