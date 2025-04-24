@@ -192,7 +192,8 @@
 
           <el-row :gutter="40">
             <el-col :span="12">
-              <el-form-item label="Valor de venta unitario sin descuento" prop="product_invoice_data.value_total_without_discount">
+              <el-form-item label="Valor de venta unitario sin descuento"
+                prop="product_invoice_data.value_total_without_discount">
                 <el-input-number v-model="formProduct.product_invoice_data.value_total_without_discount" :min="1"
                   controls-position="right" style="width: 100%;" />
               </el-form-item>
@@ -207,10 +208,7 @@
         </div>
 
         <div class="button-container-add">
-          <el-button
-          type="success"
-          class="button-secondary"
-           @click="onAddProduct(formProduct)">Agregar
+          <el-button type="success" class="button-secondary" @click="onAddProduct(formProduct)">Agregar
             producto</el-button>
         </div>
         <div class="button-container">
@@ -422,11 +420,10 @@ const resetForm = () => {
 
 const onSubmit = () => {
 
-  formRef.value?.validate((valid) => {
-    if (valid) {
-      emit('next-step');
-    }
-  });
+  if(productList && productList.length > 0){
+    emit('next-step');
+  }
+
 };
 
 const onBack = () => {
@@ -482,12 +479,14 @@ const onBack = () => {
   font-weight: 600;
   margin: 30px 0 20px;
 }
+
 .button-container-add {
   text-align: right;
   display: flex;
   justify-content: flex-start;
   margin: 30px 0;
 }
+
 .button-secondary {
   background-color: "#409eff";
   border-color: "#409eff";
