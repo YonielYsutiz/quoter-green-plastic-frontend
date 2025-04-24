@@ -20,7 +20,7 @@
       back-button-text="Anterior"
       finish-button-text="Enviar"
       @on-change="onStepChange"
-      :hide-buttons="false"
+      :hide-buttons="true"
        >
 
     <TabContent title="Datos generales orden">

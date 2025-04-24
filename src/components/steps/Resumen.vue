@@ -59,7 +59,7 @@
     </div>
 
     <div class="button-container">
-      <el-button type="success" class="button-primary">Anterior</el-button>
+      <el-button type="success" class="button-primary" @click="onConfirm">Inicio</el-button>
     </div>
   </el-card>
 </template>
@@ -77,6 +77,9 @@ function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   return date.toLocaleDateString();
 }
+const onConfirm = () => {
+  console.log('Submit button clicked');
+};
 </script>
 
 <style scoped>

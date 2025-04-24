@@ -15,14 +15,14 @@
         <div>
           <el-row :gutter="40">
             <el-col :span="12">
-              <el-form-item label="Referencia estándar">
+              <el-form-item label="Referencia estándar" prop="standar_reference">
                 <el-autocomplete v-model="formProduct.standar_reference" :fetch-suggestions="searchProducts"
                   placeholder="Buscar producto por la referencia" @select="handleSelect" />
               </el-form-item>
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="Unidad estándar">
+              <el-form-item label="Unidad estándar" prop="quantity_manufact">
                 <el-input-number v-model="formProduct.quantity_manufact" :min="1" controls-position="right"
                   style="width: 70%;" />
               </el-form-item>
@@ -32,7 +32,7 @@
 
           <el-row :gutter="40">
             <el-col :span="12">
-              <el-form-item label="Descargue de inventario"
+              <el-form-item label="Descargue de inventario" prop="download_inventory"
                 :rules="[{ required: true, message: 'Forma de pago requerida', trigger: 'change' }]">
                 <el-select v-model="formProduct.download_inventory" placeholder="Selecciona la forma de pago">
                   <el-option v-for="item in downloadInventoryTypes" :key="item.value" :label="item.label"
@@ -42,7 +42,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="Unidad de descargue">
+              <el-form-item label="Unidad de descargue" prop="quantity_manufact">
                 <el-input-number v-model="formProduct.quantity_manufact" :min="1" controls-position="right"
                   style="width: 70%;" />
               </el-form-item>
@@ -55,7 +55,7 @@
           <h2 class="section-title">Referencia a medida</h2>
           <el-row :gutter="40">
             <el-col :span="8">
-              <el-form-item label="Tipo">
+              <el-form-item label="Tipo" prop="type_reference">
                 <el-select v-model="formProduct.type_reference" placeholder="Selecciona la forma de pago">
                   <el-option label="EPTL" value="EPTL"></el-option>
                   <el-option label="EPTP" value="EPTP"></el-option>
@@ -72,17 +72,17 @@
             </el-col>
             <el-col :span="5">
 
-              <el-form-item label="Ancho">
+              <el-form-item label="Ancho" prop="width">
                 <el-input-number :min="1" v-model="formProduct.width" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="5">
-              <el-form-item label="Largo">
+              <el-form-item label="Largo" prop="length">
                 <el-input-number :min="1" v-model="formProduct.length" controls-position="right" />
               </el-form-item>
             </el-col>
             <el-col :span="5">
-              <el-form-item label="Alto">
+              <el-form-item label="Alto" prop="height">
                 <el-input-number :min="1" v-model="formProduct.height" controls-position="right" />
               </el-form-item>
             </el-col>
@@ -91,17 +91,17 @@
 
           <el-row :gutter="40">
             <el-col :span="8">
-              <el-form-item label="C1">
+              <el-form-item label="C1" prop="c1">
                 <el-input v-model="formProduct.c1" />
               </el-form-item>
             </el-col>
             <el-col :span="5">
-              <el-form-item label="C2">
+              <el-form-item label="C2" prop="c2">
                 <el-input v-model="formProduct.c2" />
               </el-form-item>
             </el-col>
             <el-col :span="5">
-              <el-form-item label="C3">
+              <el-form-item label="C3" prop="c3">
                 <el-input v-model="formProduct.c3" />
               </el-form-item>
             </el-col>
@@ -159,7 +159,7 @@
 
           <el-row :gutter="40">
             <el-col>
-              <el-form-item label="Descripción del producto, condiciones especiales de fabricación">
+              <el-form-item label="Descripción del producto, condiciones especiales de fabricación" prop="description">
                 <el-input type="textarea" v-model="formProduct.description"></el-input>
               </el-form-item>
             </el-col>
@@ -172,7 +172,7 @@
           <h2 class="section-title">Información para facturación</h2>
           <el-row :gutter="40">
             <el-col :span="12">
-              <el-form-item label="Forma de pago">
+              <el-form-item label="Forma de pago" prop="product_invoice_data.paid_method">
                 <el-select v-model="formProduct.product_invoice_data.paid_method"
                   placeholder="Selecciona la forma de pago">
                   <el-option label="Crédito" value="credito"></el-option>
@@ -183,7 +183,7 @@
             </el-col>
 
             <el-col :span="12">
-              <el-form-item label="Cantidad">
+              <el-form-item label="Cantidad" prop="product_invoice_data.quantity_total">
                 <el-input-number v-model="formProduct.product_invoice_data.quantity_total" :min="1"
                   controls-position="right" style="width: 70%;" />
               </el-form-item>
@@ -192,13 +192,13 @@
 
           <el-row :gutter="40">
             <el-col :span="12">
-              <el-form-item label="Valor de venta unitario sin descuento">
+              <el-form-item label="Valor de venta unitario sin descuento" prop="product_invoice_data.value_total_without_discount">
                 <el-input-number v-model="formProduct.product_invoice_data.value_total_without_discount" :min="1"
                   controls-position="right" style="width: 100%;" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="Valor total a facturar por ítem 1">
+              <el-form-item label="Valor total a facturar por ítem 1" prop="product_invoice_data.value_for_item">
                 <el-input-number v-model="formProduct.product_invoice_data.value_for_item" :min="1"
                   controls-position="right" style="width: 70%;" />
               </el-form-item>
@@ -215,7 +215,7 @@
         </div>
         <div class="button-container">
           <el-button type="success" class="button-primary" @click="onBack">Anterior</el-button>
-          <el-button type="success" class="button-primary" @click="onNext">Siguiente</el-button>
+          <el-button type="success" class="button-primary" @click="onSubmit">Enviar</el-button>
         </div>
 
       </el-form>
@@ -278,6 +278,53 @@ const formProduct = reactive({
   },
 });
 
+const rules = {
+  standar_reference: [{ required: true, message: 'La referencia es obligatoria', trigger: 'blur' }],
+  quantity_manufact: [{ required: true, message: 'La cantidad estándar es obligatoria', trigger: 'blur' }],
+  download_inventory: [{ required: true, message: 'Este campo es obligatorio', trigger: 'change' }],
+  quantity_download_inventory: [{ required: true, message: 'Este campo es obligatorio', trigger: 'blur' }],
+  type_reference: [{ required: true, message: 'El tipo es obligatorio', trigger: 'change' }],
+  width: [{ required: true, message: 'El ancho es obligatorio', trigger: 'blur' }],
+  length: [{ required: true, message: 'El largo es obligatorio', trigger: 'blur' }],
+  height: [{ required: true, message: 'El alto es obligatorio', trigger: 'blur' }],
+  c1: [{ required: true, message: 'Campo obligatorio', trigger: 'blur' }],
+  c2: [{ required: true, message: 'Campo obligatorio', trigger: 'blur' }],
+  c3: [{ required: true, message: 'Campo obligatorio', trigger: 'blur' }],
+  description: [{ required: true, message: 'La descripción es obligatoria', trigger: 'blur' }],
+
+  'product_invoice_data.paid_method': [{ required: true, message: 'Requerido', trigger: 'change' }],
+  'product_invoice_data.value_total_without_discount': [{ required: true, message: 'Requerido', trigger: 'blur' }],
+  'product_invoice_data.value_for_item': [{ required: true, message: 'Requerido', trigger: 'blur' }],
+  'product_invoice_data.quantity_total': [{ required: true, message: 'Requerido', trigger: 'blur' }],
+
+  // Reglas para cada item del array product_items_manufact
+  product_items_manufact: [
+    {
+      type: 'array',
+      required: true,
+      message: 'Debe tener al menos un item de fabricación',
+      trigger: 'change',
+    },
+    {
+      validator: (rule, value, callback) => {
+        if (!Array.isArray(value)) return callback(new Error('Debe ser un arreglo'));
+        for (let i = 0; i < value.length; i++) {
+          const item = value[i];
+          if (!item.type_of_piece) return callback(new Error(`El tipo de pieza es obligatorio en el ítem ${i + 1}`));
+          if (!item.quantity_type_of_piece) return callback(new Error(`La cantidad por tipo de pieza es obligatoria en el ítem ${i + 1}`));
+          if (!item.type_caracterist_manu) return callback(new Error(`El tipo de característica de fabricación es obligatorio en el ítem ${i + 1}`));
+          if (!item.manu_length) return callback(new Error(`El largo de fabricación es obligatorio en el ítem ${i + 1}`));
+          if (!item.manu_weight) return callback(new Error(`El peso de fabricación es obligatorio en el ítem ${i + 1}`));
+          if (!item.manu_total_und) return callback(new Error(`El total de unidades es obligatorio en el ítem ${i + 1}`));
+        }
+        callback();
+      },
+      trigger: 'blur',
+    },
+  ],
+
+};
+
 const searchProducts = async (query: string, cb: (data: any[]) => void) => {
   if (!query) {
     cb([]);
@@ -330,8 +377,12 @@ const handleSelect = (item: any) => {
 };
 
 const onAddProduct = (product) => {
-  addProductInList(product);
-  resetForm();
+  formRef.value?.validate((valid) => {
+    if (valid) {
+      addProductInList(product);
+      resetForm();
+    }
+  });
 }
 
 const resetForm = () => {
@@ -344,9 +395,9 @@ const resetForm = () => {
     width: '',
     length: '',
     height: '',
-    c1: '',
-    c2: '',
-    c3: '',
+    c1: 0,
+    c2: 0,
+    c3: 0,
     description: '',
     product_items_manufact: [
       {
@@ -369,10 +420,8 @@ const resetForm = () => {
   formRef.value.resetFields();
 }
 
-const onNext = () => {
+const onSubmit = () => {
 
-  emit('next-step');
-  // culminar la validacion del formulario
   formRef.value?.validate((valid) => {
     if (valid) {
       emit('next-step');
@@ -382,22 +431,6 @@ const onNext = () => {
 
 const onBack = () => {
   emit('previous-step');
-};
-
-const rules = {
-  standar_reference: [{ required: true, message: 'La referencia es obligatoria', trigger: 'blur' }],
-  quantity_manufact: [{ required: true, message: 'La cantidad estándar es obligatoria', trigger: 'blur' }],
-  download_inventory: [{ required: true, message: 'Este campo es obligatorio', trigger: 'change' }],
-  quantity_download_inventory: [{ required: true, message: 'Este campo es obligatorio', trigger: 'blur' }],
-  type_reference: [{ required: true, message: 'El tipo es obligatorio', trigger: 'change' }],
-  width: [{ required: true, message: 'El ancho es obligatorio', trigger: 'blur' }],
-  length: [{ required: true, message: 'El largo es obligatorio', trigger: 'blur' }],
-  height: [{ required: true, message: 'El alto es obligatorio', trigger: 'blur' }],
-  description: [{ required: true, message: 'La descripción es obligatoria', trigger: 'blur' }],
-  'product_invoice_data.paid_method': [{ required: true, message: 'Requerido', trigger: 'change' }],
-  'product_invoice_data.value_total_without_discount': [{ required: true, message: 'Requerido', trigger: 'blur' }],
-  'product_invoice_data.value_for_item': [{ required: true, message: 'Requerido', trigger: 'blur' }],
-  'product_invoice_data.quantity_total': [{ required: true, message: 'Requerido', trigger: 'blur' }],
 };
 
 </script>
