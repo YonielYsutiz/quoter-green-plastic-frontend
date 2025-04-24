@@ -44,7 +44,7 @@
               </el-radio-group>
             </el-col>
           </el-row>
-          
+
           <el-divider></el-divider>
 
           <el-form label-position="top">
@@ -73,7 +73,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            
+
             <el-row style="padding-top: 1%" :gutter="6">
               <el-col :span="12">
                 <el-form-item label="Contacto comercial">
@@ -144,7 +144,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            
+
             <el-col :span="24">
               <el-form-item label="Cotizacion o estimado a pagar por el transporte">
                   <el-input v-model="form.invoice_general_data.transport_calculations.transport_total_value"/>
@@ -241,7 +241,7 @@
           </el-table-column>
         </el-table>
       </el-card>
-      
+
       <!-- FORMULARIO DE PRODUCTOS -->
       <el-card shadow="always" class="box-card">
         <div style="margin-bottom: 2%;" slot="header" class="clearfix">
@@ -382,7 +382,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            
+
             <h4>Informacion para facturacion</h4>
             <el-row :gutter="10">
               <el-col :span="6">
@@ -421,7 +421,7 @@
 
   </el-row>
 </template>
-  
+
 
 
 <script lang="ts" setup>
@@ -611,7 +611,7 @@ const form_product = reactive({
     manu_weight: '', // peso
     manu_total_und: '',
   })),
-  
+
   product_invoice_data: {
     paid_method: '',
     value_total_without_discount: 0,
@@ -651,7 +651,7 @@ const handleSelect = (item: Enterprise) => {
 
   // CUANTAS PIEZAS TIENE
   var product_items_pieces_count = item.product_features_list
-  
+
   // ASIGNACION DE VALORES POR EL TIPO DE REFERENCIA
   var product_sintax = form_product.standar_reference.split(/[\s*]+/)
   form_product.type_reference = product_sintax[0]
@@ -675,12 +675,12 @@ const handleSelect = (item: Enterprise) => {
     manu_weight: '', // peso
     manu_total_und: ''
   }));
-  
+
 }
 
 
 const onSubmit = async () => {
-  
+
   // VALIDAR QUE LOS ATRIBUTOS DEL DICCIONARIO general_order_data esten llenos
 
   for (const clave in form.order_general_data) {
@@ -696,8 +696,8 @@ const onSubmit = async () => {
   // if(form.order_general_data === undefined){
   //   console.error("No se han llenado los datos generales de la orden")
   //   return;
-  // } 
-  
+  // }
+
   // VALIDAR QUE AL MENOS SE ALLA AGREGADO UN PRODUCTO A LA ORDEN
 
   if (product_list.length === 0){
@@ -721,7 +721,7 @@ const onSubmit = async () => {
           order_terms: form.order_terms,
         },
         {
-          responseType: 'blob' 
+          responseType: 'blob'
         }
     );
     console.log("cotizacion creada con exito", response)

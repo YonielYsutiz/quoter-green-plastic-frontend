@@ -1,8 +1,11 @@
 <template>
-    <el-card style="margin-bottom: 2%;" shadow="always" class="box-card">
-      <div slot="header" class="clearfix">
-        <span style="font-size: 1.5em;">Información de productos</span>
-      </div>
+  <el-card
+  class="box-card" shadow="always">
+    <div slot="header" class="clearfix">
+      <h2 class="title">Información de productos</h2>
+    </div>
+    <div class="card-content">
+
       <el-table :data="productList" style="width: 100%" height="150">
         <el-table-column prop="standar_reference" label="Referencia" width="200">
         </el-table-column>
@@ -18,22 +21,38 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
-  </template>
-  
-  <script lang="ts" setup>
-  import { defineProps, defineEmits } from 'vue';
-  
-  const props = defineProps({
-    productList: {
-      type: Array,
-      required: true,
-    },
-  });
-  
-  const emit = defineEmits(['delete']);
-  
-  const deleteRow = (index: number) => {
-    emit('delete', index);
-  };
-  </script>
+    </div>
+
+  </el-card>
+</template>
+
+<script lang="ts" setup>
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  productList: {
+    type: Array,
+    required: true,
+  },
+});
+
+const emit = defineEmits(['delete']);
+
+const deleteRow = (index: number) => {
+  emit('delete', index);
+};
+</script>
+
+<style scoped>
+.title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+}
+
+.box-card {
+  margin-top: 10px;
+  padding: 20px;
+}
+</style>

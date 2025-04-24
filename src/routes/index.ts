@@ -5,8 +5,9 @@ import orderOriginal from '../components/orderOriginal.vue';
 // import stepper from '../components/stepper.vue';
 import orderlist from '../components/orderlist.vue';
 
-const routes = [   
+const routes = [
     {path: '/quoter', component: orderCopia},
+    {path: '/quoter/v1', component: orderOriginal},
     // {path: '/quoter', component: stepper},
     {path: '/quoter/orderlist', component: orderlist},
 ]
