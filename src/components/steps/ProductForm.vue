@@ -374,13 +374,15 @@ const handleSelect = (item: any) => {
     }));
 };
 
-const onAddProduct = (product) => {
-  formRef.value?.validate((valid) => {
-    if (valid) {
-      addProductInList(product);
-      resetForm();
-    }
-  });
+const onAddProduct = (product: any) => {
+  // formRef.value?.validate((valid) => {
+  //   if (valid) {
+  //     addProductInList(product);
+  //     resetForm();
+  //   }
+  // });
+  addProductInList(product);
+  resetForm();
 }
 
 const resetForm = () => {
@@ -419,10 +421,10 @@ const resetForm = () => {
 }
 
 const onSubmit = () => {
-
-  if(productList && productList.length > 0){
-    emit('next-step');
-  }
+  emit('next-step');
+  // if(productList && productList.length > 0){
+  //   emit('next-step');
+  // }
 
 };
 

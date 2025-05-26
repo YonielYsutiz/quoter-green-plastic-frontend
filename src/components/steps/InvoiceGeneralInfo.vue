@@ -180,23 +180,23 @@ const form = ref({
 
 
 const rules = {
-  invoice_number: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  remission_number: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  ot_date: [{ required: true, message: 'Campo requerido', trigger: 'change' }],
-  delivery_date: [{ required: true, message: 'Campo requerido', trigger: 'change' }],
-  date_of_manufacture: [{ required: true, message: 'Campo requerido', trigger: 'change' }],
-  commercial_in_charge: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
+  invoice_number: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  remission_number: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  ot_date: [{ required: false, message: 'Campo requerido', trigger: 'change' }],
+  delivery_date: [{ required: false, message: 'Campo requerido', trigger: 'change' }],
+  date_of_manufacture: [{ required: false, message: 'Campo requerido', trigger: 'change' }],
+  commercial_in_charge: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
   ot_without_transport_value: [{ required: false, message: 'Campo requerido', trigger: 'change' }],
   transport_invoice_with_iva: [{ required: false, message: 'Campo requerido', trigger: 'change' }],
   transport_include_in_price: [{ required: false, message: 'Campo requerido', trigger: 'change' }],
-  transport_include_in_price_value: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  transport_total_value: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  manufacturing_units: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  invoice_total_value: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  units_downloads: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  quoter: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  type_order: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
-  decription_for_service: [{ required: true, message: 'Campo requerido', trigger: 'blur' }],
+  transport_include_in_price_value: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  transport_total_value: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  manufacturing_units: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  invoice_total_value: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  units_downloads: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  quoter: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  type_order: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
+  decription_for_service: [{ required: false, message: 'Campo requerido', trigger: 'blur' }],
 };
 
 const onCreateOrder = () => {

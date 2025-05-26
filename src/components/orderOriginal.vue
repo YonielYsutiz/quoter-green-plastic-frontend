@@ -707,6 +707,7 @@ const onSubmit = async () => {
     return;
   }
   try{
+    console.log("[X] LLEGA HASTA ACA: ", form)
     const response = await axios.post('http://127.0.0.1:8000/api/quoter',
         {
           client: form.order_general_data.client,

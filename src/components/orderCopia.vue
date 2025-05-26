@@ -107,6 +107,7 @@ const goToPreviousStep = () => {
 };
 
 const onHandledSubmit = () => {
+  console.log("[X] SE ENVIAN LOS DATOS")
   onSubmit();
   wizardRef.value?.nextTab();
 };

@@ -5,7 +5,7 @@ export function useQuoter() {
   const showAlert = ref(false);
   const alertMessage = ref('');
   const alertType = ref('error');
-  const productList = reactive<{ [key: string]: any }[]>([]);
+  const productList = ref<{ [key: string]: any }[]>([]);
   const form = reactive({
     order_general_data: {
       client: '',
@@ -44,9 +44,11 @@ export function useQuoter() {
   });
 
   const onSubmit = async () => {
+    console.log("[X] Se ejecuta")
     for (const clave in form.order_general_data) {
       const key = clave as keyof typeof form.order_general_data;
       if (form.order_general_data[key] === null || form.order_general_data[key] === undefined || form.order_general_data[key] === '') {
+        console.log("[X] FALTA INFO GENERAL")
         alertMessage.value = 'Los campos de información general son obligatorios';
         alertType.value = 'error';
         showAlert.value = true;
@@ -54,13 +56,15 @@ export function useQuoter() {
       }
     }
 
-    if (productList.length === 0) {
-      alertMessage.value = 'Debe agregar al menos un producto';
-      alertType.value = 'error';
-      showAlert.value = true;
-      return;
-    }
+    // if (productList.value) {
+    //   console.log("[X] FALTA PRODUCTS", productList)
+    //   alertMessage.value = 'Debe agregar al menos un producto';
+    //   alertType.value = 'error';
+    //   showAlert.value = true;
+    //   return;
+    // }
     try {
+      console.log("[X] SUBMIT", form)
       const response = await axios.post(
         'http://127.0.0.1:8000/api/quoter',
         {
@@ -94,7 +98,10 @@ export function useQuoter() {
   };
 
   const addProductInList = (productData: any) => {
-    productList.push({ ...productData });
+    const cleanData = JSON.parse(JSON.stringify(productData));
+    console.log("[X] AGREGA PRODUCTO", cleanData)
+    productList.value.push(cleanData);
+    console.log("[X] AGREGA PRODUCTO 1", productList.value)
   };
 
   const deleteRow = (index: number) => {
