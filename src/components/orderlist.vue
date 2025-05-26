@@ -51,38 +51,48 @@
               </div>
             </template>
             </el-table-column>
-            <el-table-column label="Descargas" align="center" width="180">
+            <el-table-column label="Descargas" align="center" width="200">
               <template #default="{ row }">
-                <div style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
+                <div style="flex-direction: column; gap: 5px; align-items: center;">
                   <!-- Botón Descargar PDF (existente) -->
-                  <div style="width: 140px;">
+                  <div style="width: 160px;">
                     <el-button 
                         type="success" 
                         size="small"
-                        style="width: 100%; padding: 8px 0; justify-content: center;"
+                        style="width: 100%; padding: 8px; justify-content: center;"
                         @click="downloadPdf(row.id)"
                         >
-                        Descargar PDF
+                        Descargar Remision cliente
                       </el-button>
                     </div>
-      
-                    <div style="width: 140px;">
+                    
+                    <div style="width: 160px;">
+                      <el-button 
+                        type="info" 
+                        size="small"
+                        style="width: 100%; padding: 8px; justify-content: center;"
+                        @click="downloadEmptyTemplate()"
+                        >
+                        Descargar Remision
+                      </el-button>
+                    </div>
+                    
+                    <div style="width: 160px;">
                       <el-button 
                         type="primary" 
                         size="small"
-                        style="width: 100%; padding: 8px 0; justify-content: center;"
+                        style="width: 100%; padding: 8px; justify-content: center;"
                         @click="donwloanOtAdmon(row.id)"
                         >
                         O.T. Admon
                       </el-button>
                     </div>
                     
-                  
-                    <div style="width: 140px;">
+                    <div style="width: 160px;">
                       <el-button 
                         type="warning" 
                         size="small"
-                        style="width: 100%; padding: 8px 0; justify-content: center;"
+                        style="width: 100%; padding: 8px; justify-content: center;"
                         @click="donwloanOtProduct(row.id)"
                         >
                         O.T. Produccion
@@ -149,17 +159,17 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="Fecha OT">
-              <el-date-picker v-model="form.invoice_general_data.ot_date" type="date" style="width: 100%;"/>
+              <el-date-picker v-model="form.invoice_general_data.ot_date" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Fecha de Entrega">
-              <el-date-picker v-model="form.invoice_general_data.delivery_date" type="date" style="width: 100%;" />
+              <el-date-picker v-model="form.invoice_general_data.delivery_date" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%;" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Fecha de Fabricación">
-              <el-date-picker v-model="form.invoice_general_data.date_of_manufacture" type="date" style="width: 100%;" />
+              <el-date-picker v-model="form.invoice_general_data.date_of_manufacture" type="date" format="YYYY-MM-DD" value-format="YYYY-MM-DD" style="width: 100%;" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -428,6 +438,24 @@ const downloadPdf = async (id: number) => {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `cotizacion_${id}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error al descargar el PDF:', error);
+  }
+};
+
+const downloadEmptyTemplate = async () => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/api/quoter/empty`, {
+      responseType: 'blob',
+    });
+
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `cotizacion_empty.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
