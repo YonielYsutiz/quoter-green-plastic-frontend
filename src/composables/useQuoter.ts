@@ -64,18 +64,19 @@ export function useQuoter() {
     //   return;
     // }
     try {
-      console.log("[X] SUBMIT", form)
+      console.log("[X] SUBMIT", productList.value)
       const response = await axios.post(
         'http://127.0.0.1:8000/api/quoter',
         {
           client: form.order_general_data.client,
           nit: form.order_general_data.nit,
           type_order: form.order_general_data.type_order,
+          quoter:form.invoice_general_data.invoice_totals.quoter,
           delivery_address: form.order_general_data.delivery_address,
           purchase_order: form.order_general_data.purchase_order,
           business_contact: form.order_general_data.business_contact,
           phone_contact: form.order_general_data.phone_contact,
-          product_general_data: productList,
+          product_general_data: productList.value,
           invoice_general_data: form.invoice_general_data,
           order_terms: form.order_terms,
         },
@@ -98,14 +99,12 @@ export function useQuoter() {
   };
 
   const addProductInList = (productData: any) => {
-    const cleanData = JSON.parse(JSON.stringify(productData));
-    console.log("[X] AGREGA PRODUCTO", cleanData)
-    productList.value.push(cleanData);
+    productList.value.push({ ...productData });
     console.log("[X] AGREGA PRODUCTO 1", productList.value)
   };
 
   const deleteRow = (index: number) => {
-    productList.splice(index, 1);
+    productList.value.splice(index, 1);
   };
 
   return {

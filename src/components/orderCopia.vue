@@ -46,6 +46,7 @@
               :downloadInventoryTypes="downloadInventoryTypes" :pieces="pieces"
               @next-step="onHandledSubmit"
               @previous-step="goToPreviousStep"
+              :addProductInList="addProductInList"
              />
           </div>
         </transition>
@@ -77,6 +78,7 @@ import logo from '../assets/logo.png';
 import { pieces, mapperInvoiceGeneralData, downloadInventoryTypes } from '@/composables/useData';
 const {
   productList,
+  addProductInList,
   form,
   onSubmit
 } = useQuoter();

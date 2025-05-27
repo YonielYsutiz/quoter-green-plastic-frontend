@@ -225,23 +225,19 @@
 <script lang="ts" setup>
 import { defineProps, defineEmits, reactive, ref } from 'vue';
 import axios from 'axios';
-import { useQuoter } from '@/composables/useQuoter';
-const { addProductInList, productList, deleteRow } = useQuoter();
+// import { useQuoter } from '@/composables/useQuoter';
+// const { addProductInList, productList, deleteRow } = useQuoter();
 const formRef = ref();
 import ProductList from './ProductList.vue';
 
 
-const props = defineProps({
-  downloadInventoryTypes: {
-    type: Array,
-    required: true,
-  },
-  pieces: {
-    type: Array,
-    required: true,
-  },
-});
-
+const props = defineProps<{
+  downloadInventoryTypes: { label: string; value: string }[];
+  pieces: { label: string; value: string }[];
+  addProductInList: (product: any) => void;
+  productList: any[];
+  deleteRow: (index: number) => void;
+}>();
 const emit = defineEmits(['next-step, previous-step']);
 
 
@@ -381,7 +377,7 @@ const onAddProduct = (product: any) => {
   //     resetForm();
   //   }
   // });
-  addProductInList(product);
+  props.addProductInList(product);
   resetForm();
 }
 
