@@ -56,13 +56,13 @@ export function useQuoter() {
       }
     }
 
-    // if (productList.value) {
-    //   console.log("[X] FALTA PRODUCTS", productList)
-    //   alertMessage.value = 'Debe agregar al menos un producto';
-    //   alertType.value = 'error';
-    //   showAlert.value = true;
-    //   return;
-    // }
+    if (!productList.value || productList.value.length === 0) {
+      console.log("[X] FALTA PRODUCTS", productList)
+      alertMessage.value = 'Debe agregar al menos un producto';
+      alertType.value = 'error';
+      showAlert.value = true;
+      return;
+    }
     try {
       console.log("[X] SUBMIT", productList.value)
       const response = await axios.post(

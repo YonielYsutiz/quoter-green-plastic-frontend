@@ -17,7 +17,7 @@
             <el-col :span="12">
               <el-form-item label="Referencia estándar" prop="standar_reference">
                 <el-autocomplete v-model="formProduct.standar_reference" :fetch-suggestions="searchProducts"
-                  placeholder="Buscar producto por la referencia" @select="handleSelect" />
+                  placeholder="Buscar producto por la referencia" @select="handleSelect"/>
               </el-form-item>
             </el-col>
 
