@@ -48,6 +48,16 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row :gutter="40">
+          <el-col :span="12">
+            <el-form-item label="Imagen de referencia" prop="image_reference">
+              <input type="file" accept="image/*" @change="handleImageUpload" />
+              <div v-if="formProduct.image_reference" style="margin-top: 10px;">
+                <img :src="formProduct.image_reference" alt="Previsualización" style="max-width: 200px;" />
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
         </div>
 
         <!-- Referencia a medida -->
@@ -246,6 +256,7 @@ const formProduct = reactive({
   quantity_manufact: 0,
   download_inventory: '',
   quantity_download_inventory: 0,
+  image_reference: '',
   type_reference: '',
   width: '',
   length: '',
@@ -317,6 +328,21 @@ const rules = {
     },
   ],
 
+};
+
+const handleImageUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    formProduct.image_reference = reader.result as string;
+  };
+
+  reader.readAsDataURL(file); // Convierte a base64 automáticamente
 };
 
 const searchProducts = async (query: string, cb: (data: any[]) => void) => {
